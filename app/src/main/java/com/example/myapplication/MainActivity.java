@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -59,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRuleChanged(AppItem item, boolean mobileBlocked, boolean wifiBlocked) {
                 viewModel.updateRule(item, mobileBlocked, wifiBlocked);
+                
+                String status = "Allowed";
+                if (mobileBlocked || wifiBlocked) {
+                    status = "Blocked";
+                }
+                Toast.makeText(MainActivity.this, status + " network for " + item.appName, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -111,11 +118,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startService(intent);
         }
+        Toast.makeText(this, "VPN Enabled", Toast.LENGTH_SHORT).show();
     }
 
     private void stopVpnService() {
         Intent intent = new Intent(this, NetCutterVpnService.class);
         intent.setAction("STOP_VPN");
         startService(intent);
+        Toast.makeText(this, "VPN Disabled", Toast.LENGTH_SHORT).show();
     }
 }
